@@ -32,7 +32,8 @@ class Restaurant(db.Model):
     locations = db.RelationshipProperty("Location")
     CheckConstraint(1 <= overallRating <= 5, name="check1")
 
-    def __init__(self, name, type, url, rating):
+    def __init__(self, id, name, type, url, rating):
+        self.id = id
         self.name = name
         self.type = type
         self.url = url
