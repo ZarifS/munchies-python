@@ -42,6 +42,15 @@ class Restaurant(db.Model):
     def __repr__(self):
         return '<Restaurant %r>' % self.name
 
+    @property
+    def serialize(self):
+        return {
+            'id' : self.restaurantId,
+            'name': self.name,
+            'type': self.type,
+            'url': self.url,
+            'overallRating': self.overallRating
+        }
 
 class Rating(db.Model):
     userId = db.Column(db.VARCHAR(50), primary_key=True)
