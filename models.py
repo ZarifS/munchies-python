@@ -22,9 +22,9 @@ class Rater(db.Model):
 
 class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), unique=True)
-    type = db.Column(db.String(), unique=False)
-    url = db.Column(db.String(), unique=True)
+    name = db.Column(db.VARCHAR(50), unique=True)
+    type = db.Column(db.VARCHAR(20), unique=False)
+    url = db.Column(db.VARCHAR(50), unique=True)
     rating = db.Column(db.Integer, unique=False)
 
     def __init__(self, name, type, url, rating):
@@ -38,23 +38,23 @@ class Restaurant(db.Model):
 
 
 class Rating(db.Model):
-    userid = db.Column(db.Integer, primary_key=True)
-    postdate = db.Column(db.String(), primary_key=True)
+    userId = db.Column(db.VARCHAR(50), primary_key=True)
+    postDate = db.Column(db.DATE, primary_key=True)
     restaurantId = db.Column(db.Integer, primary_key=True)
-    pricerating = db.Column(db.Integer, unique=False)
-    foodrating = db.Column(db.Integer, unique=False)
-    moodrating = db.Column(db.Integer, unique=False)
-    staffrating = db.Column(db.Integer, unique=False)
-    comment = db.Column(db.String(), unique=False)
+    priceRating = db.Column(db.Integer, unique=False)
+    foodRating = db.Column(db.Integer, unique=False)
+    moodRating = db.Column(db.Integer, unique=False)
+    staffRating = db.Column(db.Integer, unique=False)
+    comment = db.Column(db.VARCHAR(200), unique=False)
 
-    def __init__(self, userid, postdate, restaurantId, pricerating, foodrating, moodrating, staffrating, comment):
-        self.userid = userid
-        self.postdate = postdate
+    def __init__(self, userId, postDate, restaurantId, priceRating, foodRating, moodRating, staffRating, comment):
+        self.userId = userId
+        self.postDate = postDate
         self.restaurantId = restaurantId
-        self.pricerating = pricerating
-        self.foodrating = foodrating
-        self.moodrating = moodrating
-        self.staffrating = staffrating
+        self.priceRating = priceRating
+        self.foodRating = foodRating
+        self.moodRating = moodRating
+        self.staffRating = staffRating
 
     def __repr__(self):
         return '<Rating ID: %r>' % self.userid
@@ -80,10 +80,10 @@ class Hours(db.Model):
 class MenuItem(db.model):
     itemId = db.Column(db.Integer, primary_key=True)
     restaurantId = db.Column(db.Integer, unique=False)
-    name = db.Column(db.String(), unique=True)
-    type = db.Column(db.String(), unique=False)
-    category = db.Column(db.String(), unique=False)
-    description = db.Column(db.String(), unique=True)
+    name = db.Column(db.VARCHAR(50), unique=True)
+    type = db.Column(db.VARCHAR(20), unique=False)
+    category = db.Column(db.VARCHAR(20), unique=False)
+    description = db.Column(db.VARCHAR(100), unique=True)
     price = db.Column(db.Integer, unique=False)
 
 
@@ -98,3 +98,13 @@ class MenuItem(db.model):
 
     def __repr__(self):
         return '<Item Id: %r>' % self.itemId
+
+
+class RatingItem(db.model):
+    userId = db.Column(db.CHAR(50), primary_key=True)
+    postDate = db.Column(db.Date, primary_key=True)
+    itemId = db.Column(db.Integer, primary_key=True)
+    rating = db.Column(db.Integer, unique=False)
+    comment = db.Column(db.CHAR(200), unique=False)
+
+
