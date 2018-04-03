@@ -12,8 +12,9 @@ class Rater(db.Model):
     join_date = db.Column(db.DATE, nullable=False)
     type = db.Column(db.VARCHAR(11), nullable=False, default='online')
     reputation = db.Column(db.Integer, default=1)
-    CheckConstraint(1 <= reputation <= 5, name="reputationConstraint")
-    CheckConstraint(type="online" or "blog" or "food critic", name="typeConstraint");
+    # CheckConstraint("reputation >= 1 and reputation <= 5", name="reputationConstraint")
+    # CheckConstraint("type='online' or 'blog' or 'food critic'", name="typeConstraint")
+
     def __init__(self, userid, password, email):
         self.userid = userid
         self.password = password
@@ -24,20 +25,19 @@ class Rater(db.Model):
 
 
 class Restaurant(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    restaurantId = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(50), unique=True)
     type = db.Column(db.VARCHAR(20), unique=False)
     url = db.Column(db.VARCHAR(50), unique=True)
     overallRating = db.Column(db.Integer, unique=False)
     locations = db.RelationshipProperty("Location")
-    CheckConstraint(1 <= overallRating <= 5, name="check1")
 
-    def __init__(self, id, name, type, url, rating):
-        self.id = id
+    def __init__(self, restaurantId, name, type, url, overallrating):
+        self.restaurantId = restaurantId
         self.name = name
         self.type = type
         self.url = url
-        self.rating = rating
+        self.overallRating = overallrating
 
     def __repr__(self):
         return '<Restaurant %r>' % self.name
@@ -52,10 +52,10 @@ class Rating(db.Model):
     moodRating = db.Column(db.Integer, unique=False)
     staffRating = db.Column(db.Integer, unique=False)
     comment = db.Column(db.VARCHAR(200), unique=False)
-    CheckConstraint(1 <= priceRating <= 5, name="priceRatingConstraint")
-    CheckConstraint(1 <= foodRating <= 5, name="foodRatingConstraint")
-    CheckConstraint(1 <= moodRating <= 5, name="moodRatingConstraint")
-    CheckConstraint(1 <= staffRating <= 5, name="staffRatingConstraint")
+    # CheckConstraint("1 <= priceRating <= 5", name="priceRatingConstraint")
+    # CheckConstraint("1 <= foodRating <= 5", name="foodRatingConstraint")
+    # CheckConstraint("1 <= moodRating <= 5", name="moodRatingConstraint")
+    # CheckConstraint("1 <= staffRating <= 5", name="staffRatingConstraint")
 
     def __init__(self, userId, postDate, restaurantId, priceRating, foodRating, moodRating, staffRating, comment):
         self.userId = userId
@@ -96,7 +96,7 @@ class MenuItem(db.Model):
     category = db.Column(db.VARCHAR(20), unique=False)
     description = db.Column(db.VARCHAR(100), unique=True)
     price = db.Column(db.Integer, unique=False)
-    CheckConstraint(price >= 0, name="priceConstraint")
+    # CheckConstraint("price >= 0", name="priceConstraint")
 
     def __init__(self, itemId, restaurantId, name, type, category, description, price):
         self.itemId = itemId
@@ -117,7 +117,7 @@ class RatingItem(db.Model):
     itemId = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer, unique=False)
     comment = db.Column(db.CHAR(200), unique=False)
-    CheckConstraint(1 <= rating <= 5, name="ratingConstraint")
+    # CheckConstraint("1 <= rating <= 5", name="ratingConstraint")
 
     def __init__(self, userId, postDate, itemId, rating, comment):
         self.userId = userId
@@ -137,7 +137,7 @@ class Location(db.Model):
     phone_number = db.Column(db.VARCHAR(14), nullable=False)
     street_address = db.Column(db.VARCHAR(100), nullable=False)
     hoursId = db.Column(db.Integer, db.ForeignKey('hours.hoursId'))
-    restaurantId = db.Column(db.Integer, db.ForeignKey('restaurant.id'))
+    restaurantId = db.Column(db.Integer, db.ForeignKey('restaurant.restaurantId'))
 
     def __init__(self, locationId, first_open_date, manager_name, phone_number, street_address, hoursId, restaurantId):
         self.locationId = locationId

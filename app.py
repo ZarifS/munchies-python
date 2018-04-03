@@ -14,11 +14,10 @@ db.init_app(app)
 db.create_all()
 
 
-
-
 @app.route('/')
 def index():
     return render_template('post_resto.html')
+
 
 @app.route('/post_resto', methods=['POST'])
 def post_resto():
