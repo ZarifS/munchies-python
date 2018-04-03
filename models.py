@@ -57,4 +57,44 @@ class Rating(db.Model):
         self.staffrating = staffrating
 
     def __repr__(self):
-        return '<Rating: %r>' % self.userid
+        return '<Rating ID: %r>' % self.userid
+
+class Hours(db.Model):
+    hoursId = db.Column(db.Integer, primary_key=True)
+    weekdayOpen = db.Column(db.Time, unique=False)
+    weekdayClose = db.Column(db.Time, unique=False)
+    weekendOpen = db.Column(db.Time, unique=False)
+    weekendClose = db.Column(db.Time, unique=False)
+
+    def __init__(self, hoursId, weekdayOpen, weekdayClose, weekendOpen, weekendClose):
+        self.hoursId = hoursId
+        self.weekdayOpen = weekdayOpen
+        self.weekdayClose = weekdayClose
+        self.weekendOpen = weekendOpen
+        self.weekendClose = weekendClose
+
+    def __repr__(self):
+        return '<Hours ID: %r>' % self.hoursId
+
+
+class MenuItem(db.model):
+    itemId = db.Column(db.Integer, primary_key=True)
+    restaurantId = db.Column(db.Integer, unique=False)
+    name = db.Column(db.String(), unique=True)
+    type = db.Column(db.String(), unique=False)
+    category = db.Column(db.String(), unique=False)
+    description = db.Column(db.String(), unique=True)
+    price = db.Column(db.Integer, unique=False)
+
+
+    def __init__(self, itemId, restaurantId, name, type, category, description, price):
+        self.itemId = itemId
+        self.restaurantId = restaurantId
+        self.name = name
+        self.type = type
+        self.category = category
+        self.description = description
+        self.price = price
+
+    def __repr__(self):
+        return '<Item Id: %r>' % self.itemId
