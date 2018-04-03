@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class Rater(db.Model):
     userid = db.Column(db.VARCHAR(50), primary_key=True)
     password = db.Column(db.VARCHAR(15), nullable=False)
@@ -26,6 +27,7 @@ class Restaurant(db.Model):
     type = db.Column(db.VARCHAR(20), unique=False)
     url = db.Column(db.VARCHAR(50), unique=True)
     rating = db.Column(db.Integer, unique=False)
+    locations = db.RelationshipProperty("Location")
 
     def __init__(self, name, type, url, rating):
         self.name = name
@@ -59,6 +61,7 @@ class Rating(db.Model):
     def __repr__(self):
         return '<Rating ID: %r>' % self.userid
 
+
 class Hours(db.Model):
     hoursId = db.Column(db.Integer, primary_key=True)
     weekdayOpen = db.Column(db.Time, unique=False)
@@ -77,7 +80,7 @@ class Hours(db.Model):
         return '<Hours ID: %r>' % self.hoursId
 
 
-class MenuItem(db.model):
+class MenuItem(db.Model):
     itemId = db.Column(db.Integer, primary_key=True)
     restaurantId = db.Column(db.Integer, unique=False)
     name = db.Column(db.VARCHAR(50), unique=True)
@@ -85,7 +88,6 @@ class MenuItem(db.model):
     category = db.Column(db.VARCHAR(20), unique=False)
     description = db.Column(db.VARCHAR(100), unique=True)
     price = db.Column(db.Integer, unique=False)
-
 
     def __init__(self, itemId, restaurantId, name, type, category, description, price):
         self.itemId = itemId
@@ -100,11 +102,41 @@ class MenuItem(db.model):
         return '<Item Id: %r>' % self.itemId
 
 
-class RatingItem(db.model):
+class RatingItem(db.Model):
     userId = db.Column(db.CHAR(50), primary_key=True)
     postDate = db.Column(db.Date, primary_key=True)
     itemId = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer, unique=False)
     comment = db.Column(db.CHAR(200), unique=False)
 
+    def __init__(self, userId, postDate, itemId, rating, comment):
+        self.userId = userId
+        self.postDate = postDate
+        self. itemId = itemId
+        self.rating = rating
+        self.comment = comment
 
+    def __repr__(self):
+        return '<Rating: %r>' % self.userid
+
+
+class Location(db.Model):
+    locationId = db.Column(db.Integer, primary_key=True)
+    first_open_date = db.Column(db.DATE, nullable=False)
+    manager_name = db.Column(db.VARCHAR(50), nullable=False)
+    phone_number = db.Column(db.VARCHAR(14), nullable=False)
+    street_address = db.Column(db.VARCHAR(100), nullable=False)
+    hoursId = db.Column(db.Integer, db.ForeignKey('hours.hoursId'))
+    restaurantId = db.Column(db.Integer, db.ForeignKey('restaurant.id'))
+
+    def __init__(self, locationId, first_open_date, manager_name, phone_number, street_address, hoursId, restaurantId):
+        self.locationId = locationId
+        self.first_open_date = first_open_date
+        self. manager_name = manager_name
+        self.phone_number = phone_number
+        self.street_address = street_address
+        self.hoursId = hoursId
+        self.restaurantId = restaurantId
+
+    def __repr__(self):
+        return '<Location: %r>' % self.locationId
