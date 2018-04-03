@@ -5,6 +5,7 @@ from models import *
 # Init app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zshah011:University-25@web0.site.uottawa.ca:15432/zshah011'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.app = app
 db.init_app(app)
 
@@ -19,8 +20,14 @@ def index():
 @app.route('/restaurants', methods=['GET'])
 def getAllRestaurants():
     restaurants = Restaurant.query.all()
-    return jsonify(json_list=[i.serialize for i in restaurants])
+    return jsonify([i.serialize for i in restaurants])
 
+
+# Get resto by key
+@app.route('/restaurant/<id>', methods=['GET'])
+def getRestaurantByID(id):
+    restaurant = Restaurant.query.get(id)
+    return jsonify(restaurant.serialize)
 
 # Post Restaurant
 @app.route('/post_resto', methods=['POST'])

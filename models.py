@@ -52,6 +52,7 @@ class Restaurant(db.Model):
             'overallRating': self.overallRating
         }
 
+
 class Rating(db.Model):
     userId = db.Column(db.VARCHAR(50), primary_key=True)
     postDate = db.Column(db.DATE, primary_key=True)
