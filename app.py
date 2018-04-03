@@ -10,6 +10,8 @@ db.app = app
 db.init_app(app)
 
 
+db.create_all()
+
 # Home
 @app.route('/')
 def index():
@@ -28,6 +30,22 @@ def getAllRestaurants():
 def getRestaurantByID(id):
     restaurant = Restaurant.query.get(id)
     return jsonify(restaurant.serialize)
+
+
+# Get raters
+@app.route('/raters', methods=['GET'])
+def getAllRaters():
+    raters = Rater.query.all()
+    return jsonify([i.serialize for i in raters])
+
+
+# Get rater by key
+@app.route('/rater/<id>', methods=['GET'])
+def getRaterByID(id):
+    rater = Rater.query.get(id)
+    return jsonify(rater.serialize)
+
+
 
 # Post Restaurant
 @app.route('/post_resto', methods=['POST'])

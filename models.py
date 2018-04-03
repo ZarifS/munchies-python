@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import CheckConstraint
+from sqlalchemy import CheckConstraint, ForeignKey
 
 db = SQLAlchemy()
 
@@ -23,6 +23,18 @@ class Rater(db.Model):
     def __repr__(self):
         return '<Rater %r>' % self.userid
 
+    @property
+    def serialize(self):
+        return {
+            "userid": self.userid,
+            "password": self.password,
+            "email": self.email,
+            "name": self.name,
+            "join_date": self.join_date,
+            "type": self.type,
+            "reputation": self.reputation
+        }
+
 
 class Restaurant(db.Model):
     restaurantId = db.Column(db.Integer, primary_key=True)
@@ -30,7 +42,7 @@ class Restaurant(db.Model):
     type = db.Column(db.VARCHAR(20), unique=False)
     url = db.Column(db.VARCHAR(50), unique=True)
     overallRating = db.Column(db.Integer, unique=False)
-    locations = db.RelationshipProperty("Location")
+    locations = db.Column(db.Integer, ForeignKey("location.locationId"))
 
     def __init__(self, restaurantId, name, type, url, overallrating):
         self.restaurantId = restaurantId
