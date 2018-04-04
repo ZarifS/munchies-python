@@ -1,9 +1,13 @@
+
 from flask import Flask
 from flask import render_template, request, redirect, url_for, jsonify, abort
+from flask_cors import CORS
 from models import *
 
 # Init app
 app = Flask(__name__)
+
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zshah011:University-25@web0.site.uottawa.ca:15432/zshah011'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.app = app
