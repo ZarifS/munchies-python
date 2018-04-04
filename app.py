@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask import render_template, request, redirect, url_for, jsonify, abort
 from flask_cors import CORS
@@ -54,6 +53,16 @@ def getLocationsByRestaurantId(id):
     if locations is None:
         return abort(404)
     return jsonify(items=[i.serialize for i in locations])
+
+
+# Get menus by restaurant
+@app.route('/menuByRestaurantId/<id>', methods=['GET'])
+def getMenuByRestaurantId(id):
+    menu = MenuItem.query.filter_by(restaurantId=id).all()
+    if menu is None:
+        return abort(404)
+    return jsonify(items=[i.serialize for i in menu])
+
 
 
 # Get raters

@@ -32,7 +32,7 @@ class Rater(db.Model):
     @property
     def serialize(self):
         return {
-            "userId": self.userid,
+            "userId": self.userId,
             "password": self.password,
             "email": self.email,
             "name": self.name,
