@@ -22,7 +22,7 @@ def getAllRestaurants():
     restaurants = Restaurant.query.all()
     if restaurants is None:
         abort(404)
-    return jsonify([i.serialize for i in restaurants])
+    return jsonify(items=[i.serialize for i in restaurants])
 
 
 # Get resto by key
@@ -40,16 +40,16 @@ def getRestaurantByName(name):
     restaurants = Restaurant.query.filter(Restaurant.name.ilike(name + "%")).all()
     if restaurants is None:
         return abort(404)
-    return jsonify([i.serialize for i in restaurants])
+    return jsonify(items=[i.serialize for i in restaurants])
 
 
 # Get locations of a restaurant
-@app.route('/restaurantByName/<name>', methods=['GET'])
-def getRestaurantByName(name):
-    restaurants = Restaurant.query.filter(Restaurant.name.ilike(name + "%")).all()
-    if restaurants is None:
+@app.route('/locationByRestaurantId/<id>', methods=['GET'])
+def getLocationsByRestaurantId(id):
+    locations = Location.query.filter_by(restaurantId=id).all()
+    if locations is None:
         return abort(404)
-    return jsonify([i.serialize for i in restaurants])
+    return jsonify(items=[i.serialize for i in locations])
 
 
 # Get raters
@@ -57,7 +57,7 @@ def getRestaurantByName(name):
 def getAllRaters():
     raters = Rater.query.all()
     if raters is not None:
-        return jsonify([i.serialize for i in raters])
+        return jsonify(items=[i.serialize for i in raters])
     return abort(404)
 
 
@@ -80,4 +80,4 @@ def post_resto():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
