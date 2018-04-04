@@ -1,7 +1,15 @@
+from datetime import datetime, date, time
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 
 db = SQLAlchemy()
+
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+    if isinstance(obj, (datetime, date, time)):
+        return obj.isoformat()
+    raise TypeError("Type %s not serializable" % type(obj))
 
 
 class Rater(db.Model):
@@ -28,7 +36,7 @@ class Rater(db.Model):
             "password": self.password,
             "email": self.email,
             "name": self.name,
-            "join_date": self.join_date,
+            "join_date": json_serial(self.join_date),
             "type": self.type,
             "reputation": self.reputation
         }
@@ -89,7 +97,7 @@ class Rating(db.Model):
     def serialize(self):
         return {
             'userId': self.userId,
-            'postDate': self.postDate,
+            'postDate': json_serial(self.postDate),
             'restaurantId': self.restaurantId,
             'price': self.price,
             'food': self.food,
@@ -154,7 +162,7 @@ class RatingItem(db.Model):
     def serialize(self):
         return {
             'userId': self.userId,
-            'postDate': self.postDate,
+            'postDate': json_serial(self.postDate),
             'itemId': self.itemId,
             'rating': self.rating,
             'comment': self.comment
@@ -193,7 +201,7 @@ class Location(db.Model):
             'manager_name': self.manager_name,
             'phone_number': self.phone_number,
             'street_address': self.street_address,
-            'open': self.weekday_open,
-            'close': self.weekday_close,
+            'open': json_serial(self.open),
+            'close': json_serial(self.close),
             'restaurantId:': self.restaurantId
         }
