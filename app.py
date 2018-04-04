@@ -10,8 +10,6 @@ db.app = app
 db.init_app(app)
 
 
-db.create_all()
-
 # Home
 @app.route('/')
 def index():
@@ -22,10 +20,13 @@ def index():
 @app.route('/restaurants', methods=['GET'])
 def getAllRestaurants():
     restaurants = Restaurant.query.all()
+    if restaurants is None:
+        abort(404)
+    return jsonify([i.serialize for i in restaurants])
 
 
 # Get resto by key
-@app.route('/restaurant/<id>', methods=['GET'])
+@app.route('/restaurantById/<id>', methods=['GET'])
 def getRestaurantByID(id):
     restaurant = Restaurant.query.get(id)
     if restaurant is None:
@@ -34,9 +35,18 @@ def getRestaurantByID(id):
 
 
 # Get resto by name
-@app.route('/restaurant/<name>', methods=['GET'])
+@app.route('/restaurantByName/<name>', methods=['GET'])
 def getRestaurantByName(name):
-    restaurants = Restaurant.query.filter_by(name).all()
+    restaurants = Restaurant.query.filter(Restaurant.name.ilike(name + "%")).all()
+    if restaurants is None:
+        return abort(404)
+    return jsonify([i.serialize for i in restaurants])
+
+
+# Get locations of a restaurant
+@app.route('/restaurantByName/<name>', methods=['GET'])
+def getRestaurantByName(name):
+    restaurants = Restaurant.query.filter(Restaurant.name.ilike(name + "%")).all()
     if restaurants is None:
         return abort(404)
     return jsonify([i.serialize for i in restaurants])
@@ -58,7 +68,6 @@ def getRaterByID(id):
     if rater is None:
         return abort(404)
     return jsonify(rater.serialize)
-
 
 
 # Post Restaurant

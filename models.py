@@ -40,7 +40,6 @@ class Restaurant(db.Model):
     type = db.Column(db.VARCHAR(20), unique=False)
     url = db.Column(db.VARCHAR(50), unique=True)
     overallRating = db.Column(db.Integer, unique=False)
-    locations = db.Column(db.Integer, ForeignKey("location.locationId"))
 
     def __init__(self, restaurantId, name, type, url, overallrating):
         self.restaurantId = restaurantId
@@ -168,23 +167,19 @@ class Location(db.Model):
     manager_name = db.Column(db.VARCHAR(50), nullable=False)
     phone_number = db.Column(db.VARCHAR(14), nullable=False)
     street_address = db.Column(db.VARCHAR(100), nullable=False)
-    weekday_open = db.Column(db.Time, unique=False)
-    weekday_close = db.Column(db.Time, unique=False)
-    weekend_open = db.Column(db.Time, unique=False)
-    weekend_close = db.Column(db.Time, unique=False)
+    open = db.Column(db.Time, unique=False)
+    close = db.Column(db.Time, unique=False)
     restaurantId = db.Column(db.Integer, ForeignKey("restaurant.restaurantId"))
 
-    def __init__(self, locationid, first_open_date, manager_name, phone_number, street_address,
-                 weekdayOpen, weekdayClose, weekendOpen, weekendClose, restaurantId):
-        self.locationId = locationid
+    def __init__(self, locationId, first_open_date, manager_name, phone_number, street_address,
+                 open, close, restaurantId):
+        self.locationId = locationId
         self.first_open_date = first_open_date
         self. manager_name = manager_name
         self.phone_number = phone_number
         self.street_address = street_address
-        self.weekend_open = weekendOpen
-        self.weekend_close = weekendClose
-        self.weekday_open = weekdayOpen
-        self.weekday_close= weekdayClose
+        self.open = open
+        self.close = close
         self.restaurantId = restaurantId
 
     def __repr__(self):
@@ -198,8 +193,7 @@ class Location(db.Model):
             'manager_name': self.manager_name,
             'phone_number': self.phone_number,
             'street_address': self.street_address,
-            'weekday_open': self.weekday_open,
-            'weekday_close': self.weekday_close,
-            'weekend_open': self.weekend_open,
-            'weekend_close': self.weekend_close
+            'open': self.weekday_open,
+            'close': self.weekday_close,
+            'restaurantId:': self.restaurantId
         }
