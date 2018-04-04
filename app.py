@@ -1,5 +1,5 @@
-from flask import Flask, request, redirect, url_for, jsonify
-from flask import render_template
+from flask import Flask
+from flask import render_template, request, redirect, url_for, jsonify, abort
 from models import *
 
 # Init app
@@ -22,27 +22,41 @@ def index():
 @app.route('/restaurants', methods=['GET'])
 def getAllRestaurants():
     restaurants = Restaurant.query.all()
-    return jsonify([i.serialize for i in restaurants])
 
 
 # Get resto by key
 @app.route('/restaurant/<id>', methods=['GET'])
 def getRestaurantByID(id):
     restaurant = Restaurant.query.get(id)
+    if restaurant is None:
+        return abort(404)
     return jsonify(restaurant.serialize)
+
+
+# Get resto by name
+@app.route('/restaurant/<name>', methods=['GET'])
+def getRestaurantByName(name):
+    restaurants = Restaurant.query.filter_by(name).all()
+    if restaurants is None:
+        return abort(404)
+    return jsonify([i.serialize for i in restaurants])
 
 
 # Get raters
 @app.route('/raters', methods=['GET'])
 def getAllRaters():
     raters = Rater.query.all()
-    return jsonify([i.serialize for i in raters])
+    if raters is not None:
+        return jsonify([i.serialize for i in raters])
+    return abort(404)
 
 
 # Get rater by key
 @app.route('/rater/<id>', methods=['GET'])
 def getRaterByID(id):
     rater = Rater.query.get(id)
+    if rater is None:
+        return abort(404)
     return jsonify(rater.serialize)
 
 
