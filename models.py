@@ -14,17 +14,19 @@ def json_serial(obj):
 
 class Rater(db.Model):
     userId = db.Column(db.VARCHAR(50), primary_key=True)
-    password = db.Column(db.VARCHAR(15), nullable=False)
     email = db.Column(db.VARCHAR(50), unique=True, nullable=False)
     name = db.Column(db.VARCHAR(50))
-    join_date = db.Column(db.DATE, nullable=False)
+    join_date = db.Column(db.VARCHAR(100), nullable=False)
     type = db.Column(db.VARCHAR(11), nullable=False, default='online')
     reputation = db.Column(db.Integer, db.CheckConstraint('reputation<6'), db.CheckConstraint('reputation>0'), default=1)
 
-    def __init__(self, userId, password, email):
+    def __init__(self, userId, email, name, join_date, raterType, reputation):
         self.userId = userId
-        self.password = password
         self.email = email
+        self.name = name
+        self.join_date = join_date
+        self.type = raterType
+        self.reputation = reputation
 
     def __repr__(self):
         return '<Rater %r>' % self.userId
@@ -33,10 +35,9 @@ class Rater(db.Model):
     def serialize(self):
         return {
             "userId": self.userId,
-            "password": self.password,
             "email": self.email,
             "name": self.name,
-            "join_date": json_serial(self.join_date),
+            "join_date": self.join_date,
             "type": self.type,
             "reputation": self.reputation
         }
@@ -44,16 +45,17 @@ class Rater(db.Model):
 
 class Restaurant(db.Model):
     restaurantId = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.VARCHAR(50), unique=True)
+    name = db.Column(db.VARCHAR(100), unique=True)
     type = db.Column(db.VARCHAR(20), unique=False)
-    url = db.Column(db.VARCHAR(50), unique=True)
+    url = db.Column(db.VARCHAR(250), unique=True)
+    pic_url = db.Column(db.VARCHAR(250))
     overallRating = db.Column(db.Integer, unique=False)
 
-    def __init__(self, restaurantId, name, type, url, overallrating):
-        self.restaurantId = restaurantId
+    def __init__(self, name, type, url, overallrating, pic_url):
         self.name = name
         self.type = type
         self.url = url
+        self.pic_url = pic_url
         self.overallRating = overallrating
 
     def __repr__(self):
@@ -66,19 +68,20 @@ class Restaurant(db.Model):
             'name': self.name,
             'type': self.type,
             'url': self.url,
+            'pic_url': self.pic_url,
             'overallRating': self.overallRating
         }
 
 
 class Rating(db.Model):
     userId = db.Column(db.VARCHAR(50), ForeignKey("rater.userId"), primary_key=True)
-    postDate = db.Column(db.DATE, primary_key=True)
+    postDate = db.Column(db.VARCHAR(25), primary_key=True)
     restaurantId = db.Column(db.Integer, ForeignKey("restaurant.restaurantId"), primary_key=True)
     price = db.Column(db.Integer, db.CheckConstraint('price<6'), db.CheckConstraint('price>0'), unique=False)
     food = db.Column(db.Integer, db.CheckConstraint('food<6'), db.CheckConstraint('food>0'), unique=False)
     mood = db.Column(db.Integer, db.CheckConstraint('mood<6'), db.CheckConstraint('mood>0'), unique=False)
     staff = db.Column(db.Integer, db.CheckConstraint('staff<6'), db.CheckConstraint('staff>0'), unique=False)
-    comment = db.Column(db.VARCHAR(200), unique=False)
+    comment = db.Column(db.VARCHAR(500), unique=False)
 
     def __init__(self, userId, postDate, restaurantId, priceRating, foodRating, moodRating, staffRating, comment):
         self.userId = userId
@@ -97,7 +100,7 @@ class Rating(db.Model):
     def serialize(self):
         return {
             'userId': self.userId,
-            'postDate': json_serial(self.postDate),
+            'postDate': self.postDate,
             'restaurantId': self.restaurantId,
             'price': self.price,
             'food': self.food,
@@ -113,11 +116,10 @@ class MenuItem(db.Model):
     name = db.Column(db.VARCHAR(50))
     type = db.Column(db.VARCHAR(20), unique=False)
     category = db.Column(db.VARCHAR(20), unique=False)
-    description = db.Column(db.VARCHAR(100))
+    description = db.Column(db.VARCHAR(500))
     price = db.Column(db.Integer, db.CheckConstraint('price >= 0'), unique=False)
 
-    def __init__(self, itemId, restaurantId, name, foodtype, category, description, price):
-        self.itemId = itemId
+    def __init__(self, restaurantId, name, foodtype, category, description, price):
         self.restaurantId = restaurantId
         self.name = name
         self.type = foodtype
@@ -142,11 +144,11 @@ class MenuItem(db.Model):
 
 
 class RatingItem(db.Model):
-    userId = db.Column(db.CHAR(50), ForeignKey("rater.userId"), primary_key=True)
-    postDate = db.Column(db.Date, primary_key=True)
-    itemId = db.Column(db.Integer, ForeignKey("menu_item.itemId"))
+    userId = db.Column(db.VARCHAR(50), ForeignKey("rater.userId"), primary_key=True)
+    postDate = db.Column(db.VARCHAR(50))
+    itemId = db.Column(db.Integer, ForeignKey("menu_item.itemId"), primary_key=True)
     rating = db.Column(db.Integer, db.CheckConstraint('rating > 0'), db.CheckConstraint('rating < 6'), unique=False)
-    comment = db.Column(db.CHAR(200), unique=False)
+    comment = db.Column(db.VARCHAR(500), unique=False)
 
     def __init__(self, userId, postDate, itemId, rating, comment):
         self.userId = userId
@@ -171,7 +173,6 @@ class RatingItem(db.Model):
 
 class Location(db.Model):
     locationId = db.Column(db.Integer, primary_key=True)
-    first_open_date = db.Column(db.DATE, nullable=False)
     manager_name = db.Column(db.VARCHAR(50), nullable=False)
     phone_number = db.Column(db.VARCHAR(14), nullable=False)
     street_address = db.Column(db.VARCHAR(100), nullable=False)
@@ -179,10 +180,8 @@ class Location(db.Model):
     close = db.Column(db.Time, unique=False)
     restaurantId = db.Column(db.Integer, ForeignKey("restaurant.restaurantId"))
 
-    def __init__(self, locationId, first_open_date, manager_name, phone_number, street_address,
+    def __init__(self, manager_name, phone_number, street_address,
                  open, close, restaurantId):
-        self.locationId = locationId
-        self.first_open_date = first_open_date
         self. manager_name = manager_name
         self.phone_number = phone_number
         self.street_address = street_address
@@ -197,7 +196,6 @@ class Location(db.Model):
     def serialize(self):
         return {
             'locationId': self.locationId,
-            'first_open_date': self.first_open_date,
             'manager_name': self.manager_name,
             'phone_number': self.phone_number,
             'street_address': self.street_address,

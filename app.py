@@ -2,15 +2,24 @@ from flask import Flask
 from flask import render_template, request, redirect, url_for, jsonify, abort
 from flask_cors import CORS
 from models import *
+from dbFiller import *
 
 # Init app
 app = Flask(__name__)
 
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zshah011:University-25@web0.site.uottawa.ca:15432/zshah011'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Zarif:postgres@localhost:5432/munchies'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.app = app
 db.init_app(app)
+
+# db.create_all()
+# To populate table, run each populate command one at a time.
+# populateRestaurantTable(db)
+# populateMenuTable(db)
+# populateRaterTable(db)
+# populateRatingTable(db)
+# populateMenuItemRatingTable(db)
 
 
 # Home
@@ -63,6 +72,14 @@ def getMenuByRestaurantId(id):
         return abort(404)
     return jsonify(items=[i.serialize for i in menu])
 
+
+# Get rating for menu item
+@app.route('/ratingByMenuItemId/<id>')
+def getRatingByMenuItemId(id):
+    rating = RatingItem.query.filter_by(itemId=id).all()
+    if rating is None:
+        return abort(404)
+    return jsonify(items=[i.serialize for i in rating])
 
 
 # Get raters
