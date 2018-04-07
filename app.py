@@ -29,9 +29,13 @@ def index():
 
 
 # Get all the restos
-@app.route('/restaurants', methods=['GET'])
-def getAllRestaurants():
-    restaurants = Restaurant.query.all()
+@app.route('/restaurants', defaults={'limit': None})
+@app.route('/restaurants/limit=<limit>', methods=['GET'])
+def getAllRestaurants(limit):
+    if(limit):
+        restaurants = Restaurant.query.limit(limit).all()
+    else:
+        restaurants = Restaurant.query.all()
     if restaurants is None:
         abort(404)
     return jsonify(items=[i.serialize for i in restaurants])
@@ -49,7 +53,7 @@ def getRestaurantByID(id):
 # Get resto by name
 @app.route('/restaurantByName/<name>', methods=['GET'])
 def getRestaurantByName(name):
-    restaurants = Restaurant.query.filter(Restaurant.name.ilike(name + "%")).all()
+    restaurants = Restaurant.query.filter(Restaurant.name.ilike("%" + name + "%")).all()
     if restaurants is None:
         return abort(404)
     return jsonify(items=[i.serialize for i in restaurants])
