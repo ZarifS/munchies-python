@@ -9,14 +9,14 @@ from models import Rater, Restaurant, Location, Rating, MenuItem, RatingItem
 import time
 
 def populateRestaurantTable(db):
-    start = 115
-    while start < 200:
-        url = "https://developers.zomato.com/api/v2.1/search?start="+str(start)+"&lat=40.0522&lon=73.2437"
+    start = 0
+    while start < 100:
+        url = "https://developers.zomato.com/api/v2.1/search?start="+str(start)+"&lat=40.748&lon=-73.985"
         start += 20
         jsonResponse = {}
         try:
             request = urllib3.PoolManager().request('GET', url,
-                                                    headers={"user-key": "5b83c0b813f003a18d51366d996fc95e"})
+                                                    headers={"user-key": "21524a1242003830e7d41d90a2918c3e"})
             jsonResponse = json.loads(request.data.decode('UTF-8'))
         except HTTPError:
             print("Error")
@@ -28,7 +28,7 @@ def populateRestaurantTable(db):
             name = restaurant['name']
             pic_url = restaurant['featured_image']
             if not pic_url:
-                pic_url = restaurant['thumb']
+                pic_url = ""
             url = restaurant['url']
             rating = restaurant['user_rating']
             overallRating = rating['aggregate_rating']

@@ -59,6 +59,15 @@ def getRestaurantByName(name):
     return jsonify(items=[i.serialize for i in restaurants])
 
 
+# Get resto by type
+@app.route('/restaurantByType/<type>', methods=['GET'])
+def getRestaurantByType(type):
+    restaurants = Restaurant.query.filter(Restaurant.type.ilike("%" + type + "%")).all()
+    if restaurants is None:
+        return abort(404)
+    return jsonify(items=[i.serialize for i in restaurants])
+
+
 # Get locations of a restaurant
 @app.route('/locationByRestaurantId/<id>', methods=['GET'])
 def getLocationsByRestaurantId(id):
