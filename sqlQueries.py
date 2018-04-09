@@ -17,11 +17,11 @@ queries = {
          GROUP BY R.name, U."userId" ORDER BY R.name , average ''',
 
     'g':
-    '''Select R.name, R.type, L.phone_number FROM  Restaurant R,  Location L WHERE 
-        NOT EXISTS(SELECT * FROM  Rating R8 WHERE
-            date_part('year',R8."postDate") = 2015 AND date_part('month',R8."postDate") = 01
-            AND R8."restaurantId" = R."restaurantId")
-        AND R."restaurantId" = L."restaurantId" ORDER BY R.name''',
+    '''SELECT restaurant.name, restaurant.type, location.phone_number
+        FROM rating, restaurant, location
+      WHERE (rating."postDate" > '20150131' OR rating."postDate" < '20150101')
+      AND rating."restaurantId" = restaurant."restaurantId"
+      AND location."restaurantId" = restaurant."restaurantId"''',
 
     'h':
     '''SELECT R.name, L.manager_name FROM Restaurant R, Location L WHERE
