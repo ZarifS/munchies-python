@@ -125,7 +125,7 @@ def post_resto():
 
 # Post Menu Item
 @app.route('/post_menuitem', methods=['POST'])
-def post_resto():
+def post_menuitem():
     dataReceived = request.get_json();
     print(dataReceived);
     new_menuitem = MenuItem(restaurantId=dataReceived['id'], name=dataReceived['name'], foodtype=dataReceived['foodtype'], category=dataReceived['category'], description=dataReceived['description'], price=dataReceived['price']);
@@ -135,7 +135,7 @@ def post_resto():
 
 # Post Rater
 @app.route('/post_rater', methods=['POST'])
-def post_resto():
+def post_rater():
     dataReceived = request.get_json();
     print(dataReceived);
     new_rater = Rater(userId=dataReceived['userid'], email=dataReceived['email'], name=dataReceived['name'], join_date=dataReceived['join_date'], raterType=dataReceived['ratertype'], reputation=dataReceived['reputation']);
