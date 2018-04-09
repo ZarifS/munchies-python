@@ -1,3 +1,5 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
 -- e. For each type of restaurant (e.g. Indian or Irish) and the category of menu item (appetiser, main
 -- or desert), list the average prices of menu items for each category.   
 
@@ -88,7 +90,7 @@ SELECT U.name, U.join_date, U.reputation, R.name, R8."postDate" FROM  Rater U,  
 			Rate."userId" = U1."userId")
 		>= ALL(SELECT AVG(Rate1.mood  + Rate1.food ) FROM  Rating Rate1,  Rater U2 WHERE
 			Rate1."userId" = U2."userId" GROUP BY U2."userId"))
-	AND R8."userId" = U."userId" AND R8."restaurantId" = R."restaurantId";
+	AND R8."userId" = U."userId" AND R8."restaurantId" = R."restaurantId"
 
 -- l. Find the names and reputations of the raters that give the highest overall rating, in terms of the
 -- Food or the Mood of restaurants. Display this information together with the names of the
