@@ -49,16 +49,16 @@ SELECT R.name, L.manager_name FROM Restaurant R, Location L WHERE
 -- restaurant name together with the name(s) of the rater(s) who gave these ratings. (Here, Type Y
 -- refers to any restaurant type of your choice, e.g. Indian or Burger.)  
 	
---CONFIRMED
+--CONFIRMED (THIS ONE DONE HERE)
 
-Select R.name, U.name FROM Restaurant R, Rater U WHERE
-	R."restaurantId" IN (SELECT R8."restaurantId" FROM Rating R8 WHERE
-		R8."restaurantId" IN (SELECT R1."restaurantId" FROM Restaurant R1 WHERE
-				R1.type = $inputType)
-		AND 
-		R8.food  >= All(SELECT Rate.food  FROM Rating Rate WHERE
-			Rate."restaurantId" IN (SELECT R2."restaurantId" FROM Restaurant R2 WHERE
-				R2.type = $inputType))
+SELECT restaurant.name, U.name FROM restaurant, rater U WHERE
+	restaurant."restaurantId" IN (SELECT R8."restaurantId" FROM rating R8 WHERE
+		R8."restaurantId" IN (SELECT R1."restaurantId" FROM restaurant R1 WHERE
+				R1.type = 'American')
+		AND
+		R8.food >= All(SELECT Rate.food FROM rating Rate WHERE
+			Rate."restaurantId" IN (SELECT R2."restaurantId" FROM restaurant R2 WHERE
+				R2.type = 'American'))
 		AND
 		R8."userId" = U."userId");
 
