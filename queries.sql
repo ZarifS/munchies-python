@@ -117,12 +117,12 @@ SELECT U.name, U.reputation, R8.comment FROM  Rating R8,  Rater U WHERE
 	U."userId" IN (SELECT U1."userId" FROM  Rater U1 WHERE
 		(SELECT COUNT(*) FROM  Rating Rate WHERE Rate."userId" = U1."userId" AND
 			Rate."restaurantId" IN (SELECT R."restaurantId" FROM  Restaurant R WHERE
-				R.name ='Shawns Salad'))
+				R.name ='Pai'))
 		>=  All(SELECT COUNT(*) FROM  Rating Rate1 WHERE 
 			Rate1."restaurantId" IN (SELECT R."restaurantId" FROM  Restaurant R WHERE
-				R.name ='Shawns Salad') GROUP BY Rate1."userId"))
+				R.name ='Pai') GROUP BY Rate1."userId"))
 	AND R8."userId" = U."userId" AND R8."restaurantId" IN (SELECT R."restaurantId" FROM  Restaurant R WHERE
-				R.name ='Shawns Salad') 
+				R.name ='Pai') 
 
 -- n. Find the names and emails of all raters who gave ratings that are lower than that of a rater with
 -- a name called John, in terms of the combined rating of Price, Food, Mood and Staff. (Note that
