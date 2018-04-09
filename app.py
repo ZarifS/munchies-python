@@ -9,7 +9,7 @@ import json
 app = Flask(__name__)
 
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Pasoon:password123@localhost:5432/restaurant_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Zarif:postgres@localhost:5432/munchies'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.app = app
 db.init_app(app)
@@ -117,33 +117,57 @@ def getRaterByID(id):
 # Post Restaurant
 @app.route('/post_resto', methods=['POST'])
 def post_resto():
-    dataReceived = request.get_json();
-    print(dataReceived);
-    new_restaurant = Restaurant(name=dataReceived['name'], type=dataReceived['type'], url=dataReceived['url'], pic_url=dataReceived['pic_url'], overallrating=4);
-    db.session.add(new_restaurant);
-    db.session.commit();
+    dataReceived = request.get_json()
+    print(dataReceived)
+    new_restaurant = Restaurant(name=dataReceived['name'], type=dataReceived['type'], url=dataReceived['url'], pic_url=dataReceived['pic_url'], overallrating=4)
+    db.session.add(new_restaurant)
+    db.session.commit()
     return redirect(url_for('index'))
 
 # Post Menu Item
 @app.route('/post_menuitem', methods=['POST'])
 def post_menuitem():
-    dataReceived = request.get_json();
-    print(dataReceived);
-    new_menuitem = MenuItem(restaurantId=dataReceived['id'], name=dataReceived['name'], foodtype=dataReceived['foodtype'], category=dataReceived['category'], description=dataReceived['description'], price=dataReceived['price']);
-    db.session.add(new_menuitem);
-    db.session.commit();
+    dataReceived = request.get_json()
+    print(dataReceived)
+    new_menuitem = MenuItem(restaurantId=dataReceived['restaurantId'], name=dataReceived['name'], foodtype=dataReceived['type'], category=dataReceived['category'], description=dataReceived['description'], price=dataReceived['price'])
+    db.session.add(new_menuitem)
+    db.session.commit()
     return redirect(url_for('index'))
 
 # Post Rater
 @app.route('/post_rater', methods=['POST'])
 def post_rater():
-    dataReceived = request.get_json();
-    print(dataReceived);
-    new_rater = Rater(userId=dataReceived['userid'], email=dataReceived['email'], name=dataReceived['name'], join_date=dataReceived['join_date'], raterType=dataReceived['ratertype'], reputation=dataReceived['reputation']);
-    db.session.add(new_rater);
-    db.session.commit();
+    dataReceived = request.get_json()
+    print(dataReceived)
+    joinDate = str(datetime.date.today())[:10]
+    new_rater = Rater(userId=dataReceived['userId'], email=dataReceived['email'], name=dataReceived['name'], join_date=joinDate, raterType=dataReceived['type'], reputation=1)
+    db.session.add(new_rater)
+    db.session.commit()
     return redirect(url_for('index'))
 
+# Delete a Menu Item
+@app.route('/deleteMenuItem/<id>')
+def deleteMenuItem(id):
+    item = MenuItem.query.get(id)
+    db.session.delete(item)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+# Delete a Restaurant
+@app.route('/deleteRestaurant/<id>')
+def deleteRestaurant(id):
+    item = Restaurant.query.get(id)
+    db.session.delete(item)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+# Delete a Rater Item
+@app.route('/deleteRater/<id>')
+def deleteRater(id):
+    item = Rater.query.get(id)
+    db.session.delete(item)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
