@@ -8,12 +8,12 @@ order by ("user".username)
 limit 20''',
 
 'g':
-'''select restaurant.name as restaurant_name, cuisine_type.name as cuisine_name, location."phoneNumber" as phone_number
-from rating, restaurant, location, cuisine_type
-where (rating.date > '20150131' or rating.date < '20150101')
-and rating."restaurantId" = restaurant.id
-and cuisine_type."restaurantId" = restaurant.id
-and location."restaurantId" = restaurant.id
+'''select restaurant.name, menu_item.type, location.phone_number
+from rating, restaurant, location, menu_item
+where (rating."postDate" > '20150131' or rating."postDate" < '20150101')
+and rating."restaurantId" = restaurant."restaurantId"
+and menu_item."restaurantId" = restaurant."restaurantId"
+and location."restaurantId" = restaurant."restaurantId"
 limit 20''',
 
 'h':
