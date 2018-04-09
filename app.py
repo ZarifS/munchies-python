@@ -1,15 +1,19 @@
 from flask import Flask
 from flask import render_template, request, redirect, url_for, jsonify, abort
 from flask_cors import CORS
+from sqlalchemy import text
+
 from models import *
 from dbFiller import *
-import json
+from sqlQueries import *
+import simplejson as json
+import decimal, datetime
 
 # Init app
 app = Flask(__name__)
 
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Zarif:postgres@localhost:5432/munchies'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Pasoon:password123@localhost:5432/restaurant_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.app = app
 db.init_app(app)
@@ -169,6 +173,100 @@ def deleteRater(id):
     db.session.commit()
     return redirect(url_for('index'))
 
+# Get e)
+@app.route('/e', methods=['GET'])
+def get_e():
+    data = db.engine.execute(text(queries['e'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get f)
+@app.route('/f', methods=['GET'])
+def get_f():
+    data = db.engine.execute(text(queries['f'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get g)
+@app.route('/g', methods=['GET'])
+def get_g():
+    data = db.engine.execute(text(queries['g'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get h)
+@app.route('/h', methods=['GET'])
+def get_h():
+    data = db.engine.execute(text(queries['h'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get i)
+@app.route('/i', methods=['GET'])
+def get_i():
+    data = db.engine.execute(text(queries['i'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get j)
+@app.route('/j', methods=['GET'])
+def get_j():
+    data = db.engine.execute(text(queries['j'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get k)
+@app.route('/k', methods=['GET'])
+def get_k():
+    data = db.engine.execute(text(queries['k'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get l)
+@app.route('/l', methods=['GET'])
+def get_l():
+    data = db.engine.execute(text(queries['l'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get m)
+@app.route('/m', methods=['GET'])
+def get_m():
+    data = db.engine.execute(text(queries['m'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get n)
+@app.route('/n', methods=['GET'])
+def get_n():
+    data = db.engine.execute(text(queries['n'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+# Get o)
+@app.route('/o', methods=['GET'])
+def get_o():
+    data = db.engine.execute(text(queries['o'])).fetchall()
+    print(data)
+
+    return json.dumps([dict(r) for r in data], default=alchemyencoder)
+
+
+def alchemyencoder(obj):
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    elif isinstance(obj, decimal.Decimal):
+        return float(obj)
 
 if __name__ == "__main__":
     app.run(debug=True)
